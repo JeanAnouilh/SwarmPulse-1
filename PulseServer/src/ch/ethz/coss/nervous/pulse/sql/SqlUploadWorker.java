@@ -22,34 +22,34 @@
  *
  * 	Author:
  * 	Prasad Pulikal - prasad.pulikal@gess.ethz.ch  - Initial design and implementation
+ *  Dario Leuchtmann - ldario@student.ethz.ch - Add Acc and Gyro
  *******************************************************************************/
 package ch.ethz.coss.nervous.pulse.sql;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 import ch.ethz.coss.nervous.pulse.PulseWebSocketServer;
+import ch.ethz.coss.nervous.pulse.model.AccReading;
+import ch.ethz.coss.nervous.pulse.model.GyroReading;
 import ch.ethz.coss.nervous.pulse.model.LightReading;
 import ch.ethz.coss.nervous.pulse.model.NoiseReading;
 import ch.ethz.coss.nervous.pulse.model.TextVisual;
+import ch.ethz.coss.nervous.pulse.model.TemperatureReading;
 import ch.ethz.coss.nervous.pulse.model.Visual;
-import ch.ethz.coss.nervous.pulse.model.VisualLocation;
 import ch.ethz.coss.nervous.pulse.socket.ConcurrentSocketWorker;
 import ch.ethz.coss.nervous.pulse.utils.Log;
 import flexjson.JSONDeserializer;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
@@ -65,7 +65,7 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 		this.sqlse = sqlse;
 	}
 
-	@SuppressWarnings("deprecation")
+	//@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
 		// InputStream is;
@@ -109,9 +109,17 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 					}
 					System.out.println("JSON STRING = " + json);
 					System.out.println("JSON Length = " + json.length());
-
+					
 					if (json.length() <= 0)
 						continue;
+					//Edit JSON STRING
+					if(json.indexOf("HTTP") != -1) {
+						json = json.substring(json.indexOf("{"));
+						System.out.println("NEW JSON STRING = " + json);
+						System.out.println("NEW JSON Length = " + json.length());
+						connected = false;
+					}
+					
 					reading = new JSONDeserializer<Visual>().deserialize(json, Visual.class);
 					feature = new JsonObject();
 
@@ -141,13 +149,26 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 					if (reading.type == 0) {
 						// System.out.println("Reading instance of light");
 						properties.addProperty("readingType", "" + 0);
-						properties.addProperty("level", "" + ((LightReading) reading).lightVal);
+						properties.addProperty("Lightlevel", "" + ((LightReading) reading).lightVal);
 					} else if (reading.type == 1) {
 						properties.addProperty("readingType", "" + 1);
-						properties.addProperty("level", "" + ((NoiseReading) reading).soundVal);
+						properties.addProperty("Noiselevel", "" + ((NoiseReading) reading).soundVal);
 					} else if (reading.type == 2) {
 						properties.addProperty("readingType", "" + 2);
 						properties.addProperty("message", "" + ((TextVisual) reading).textMsg);
+					} else if (reading.type == 3) {
+						properties.addProperty("readingType", "" + 3);
+						properties.addProperty("x", "" + ((AccReading) reading).x);
+						properties.addProperty("y", "" + ((AccReading) reading).y);
+						properties.addProperty("z", "" + ((AccReading) reading).z);
+					} else if (reading.type == 4) {
+						properties.addProperty("readingType", "" + 4);
+						properties.addProperty("x", "" + ((GyroReading) reading).x);
+						properties.addProperty("y", "" + ((GyroReading) reading).y);
+						properties.addProperty("z", "" + ((GyroReading) reading).z);
+					} else if (reading.type == 5) {
+						properties.addProperty("readingType", "" + 5);
+						properties.addProperty("Temperaturelevel", "" + ((TemperatureReading) reading).temperatureVal);
 					} else {
 						// System.out.println("Reading instance not known");
 					}
@@ -186,6 +207,22 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 								datastmt.setString(4, ((TextVisual) reading).textMsg);
 								datastmt.setDouble(5, reading.location.latnLong[0]);
 								datastmt.setDouble(6, reading.location.latnLong[1]);
+							} else if (reading.type == 3) {
+								datastmt.setLong(2, reading.timestamp);
+								datastmt.setLong(3, reading.volatility);
+								datastmt.setDouble(4, ((AccReading) reading).x);
+								datastmt.setDouble(5, ((AccReading) reading).y);
+								datastmt.setDouble(6, ((AccReading) reading).z);
+								datastmt.setDouble(7, reading.location.latnLong[0]);
+								datastmt.setDouble(8, reading.location.latnLong[1]);
+							} else if (reading.type == 4) {
+								datastmt.setLong(2, reading.timestamp);
+								datastmt.setLong(3, reading.volatility);
+								datastmt.setDouble(4, ((GyroReading) reading).x);
+								datastmt.setDouble(5, ((GyroReading) reading).y);
+								datastmt.setDouble(6, ((GyroReading) reading).z);
+								datastmt.setDouble(7, reading.location.latnLong[0]);
+								datastmt.setDouble(8, reading.location.latnLong[1]);
 							}
 							// System.out.println("datastmt after populating - "
 							// + datastmt.toString());

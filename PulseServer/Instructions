@@ -1,0 +1,7 @@
+Add a new layer those classes are needed to be changed:
+ -PulseConstants.java
+ -WriteJSON.java
+ -SqlUploadWorker.java
+ - SqlRequestWorker.java
+ -pulse_config.xml
+ -Add a new Reading Class for the new layer

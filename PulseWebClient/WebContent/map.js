@@ -43,6 +43,9 @@ $(document)
 					var lightMarkers = new L.LayerGroup();
 					var noiseMarkers = new L.LayerGroup();
 					var msgMarkers = new L.LayerGroup();
+					var temperatureMarkers = new L.LayerGroup();
+					var accelerometerMarkers = new L.LayerGroup();
+					var gyroMarkers = new L.LayerGroup();
 
 					new L.Control.Zoom({
 						position : 'topright'
@@ -123,7 +126,10 @@ $(document)
 
 							"Messages" : msgMarkers,
 							"Light" : lightMarkers,
-							"Sound" : noiseMarkers
+							"Sound" : noiseMarkers,
+							"Temperature" : temperatureMarkers,
+							"Acceleration" : accelerometerMarkers,
+							"Gyroscope" : gyroMarkers
 
 						}
 					};
@@ -200,6 +206,93 @@ $(document)
 									+ getLightColor(lightGrades[i] + 1)
 									+ '"> <p align: \'left\' style=\'color: #FFA500; display:inline-block; \'>'
 									+ lightLabels[i] + ' </p><br>';
+
+						}
+						return div;
+					};
+					
+					/** *****Legend for Color levels for acceleration***** */
+					var legendAccelerometer = L.control({
+						position : 'bottomleft'
+					});
+
+					legendAccelerometer.onAdd = function(map) {
+						var div = L.DomUtil.create('div', 'label');
+						grades = [ 0, 10, 30, 50, 70, 100, 120, 140 ],
+								labels = [ "  0-10  ", "10-30", "30-50",
+										"50-70", "70-100", "100-120",
+										"120-140", "   140+  " ];
+
+						div.style.border = "1px solid #ffffff";
+						div.style.borderRadius = "2px";
+						div.style.backgroundColor = "#2A2A2A";
+						div.style.color = "#ffffff";
+						div.style.fontSize = "80%";
+						div.innerHTML = '<p align: \'bottom\'  style=\'color: #FFFFFF;   display:inline-block;\'> Acceleration Level</p>  <br>';
+
+						for (var i = 0; i < grades.length; i++) {
+							div.innerHTML += '<img align = "left"  width=\'10px\' height=\'10px\' style="background-color:'
+									+ getAccelerometerColor(grades[i] + 1)
+									+ '"> <p align: \'left\' style=\'color: #FFA500; display:inline-block; \'>'
+									+ labels[i] + ' </p><br>';
+
+						}
+						return div;
+					};
+					
+					/** *****Legend for Color levels for temperature***** */
+					var legendTemperature = L.control({
+						position : 'bottomleft'
+					});
+
+					legendTemperature.onAdd = function(map) {
+						var div = L.DomUtil.create('div', 'label');
+						grades = [ -30, -20, -10, 0, 10, 20, 30, 40 ],
+								labels = [ "  < -20  ", "-20 - -10", "-10 - 0 ",
+										"  0 - 10 ", " 10 - 20 ", " 20 - 30 ",
+										" 30 - 40 ", "   40 <  " ];
+
+						div.style.border = "1px solid #ffffff";
+						div.style.borderRadius = "2px";
+						div.style.backgroundColor = "#2A2A2A";
+						div.style.color = "#ffffff";
+						div.style.fontSize = "80%";
+						div.innerHTML = '<p align: \'bottom\'  style=\'color: #FFFFFF;   display:inline-block;\'> Temperature Level</p>  <br>';
+
+						for (var i = 0; i < grades.length; i++) {
+							div.innerHTML += '<img align = "left"  width=\'10px\' height=\'10px\' style="background-color:'
+									+ getTemperatureColor(grades[i] + 1)
+									+ '"> <p align: \'left\' style=\'color: #FFA500; display:inline-block; \'>'
+									+ labels[i] + ' </p><br>';
+
+						}
+						return div;
+					};
+					
+					/** *****Legend for Color levels for gyroscope***** */
+					var legendGyro = L.control({
+						position : 'bottomleft'
+					});
+
+					legendGyro.onAdd = function(map) {
+						var div = L.DomUtil.create('div', 'label');
+						grades = [ 0, 10, 30, 50, 70, 100, 120, 140 ],
+								labels = [ "  0-10  ", "10-30", "30-50",
+										"50-70", "70-100", "100-120",
+										"120-140", "   140+  " ];
+
+						div.style.border = "1px solid #ffffff";
+						div.style.borderRadius = "2px";
+						div.style.backgroundColor = "#2A2A2A";
+						div.style.color = "#ffffff";
+						div.style.fontSize = "80%";
+						div.innerHTML = '<p align: \'bottom\'  style=\'color: #FFFFFF;   display:inline-block;\'> Gyroscope Level</p>  <br>';
+
+						for (var i = 0; i < grades.length; i++) {
+							div.innerHTML += '<img align = "left"  width=\'10px\' height=\'10px\' style="background-color:'
+									+ getGyroColor(grades[i] + 1)
+									+ '"> <p align: \'left\' style=\'color: #FFA500; display:inline-block; \'>'
+									+ labels[i] + ' </p><br>';
 
 						}
 						return div;
@@ -302,6 +395,18 @@ $(document)
 
 													resetToNoiseReadings();
 													last_layer = 2;
+												} else if (current_layer == 3) {
+
+													resetToTemperatureReadings();
+													last_layer = 3;
+												} else if (current_layer == 4) {
+
+													resetToAccelerometerReadings();
+													last_layer = 4;
+												} else if (current_layer == 5) {
+
+													resetToGyroReadings();
+													last_layer = 5;
 												}
 												changeSocketToRealTime();
 
@@ -431,6 +536,51 @@ $(document)
 												makeInitialRequest();
 											}
 
+										} else if (a.name == "Acceleration"
+												&& current_layer != 4) {
+
+											resetToAccelerometerReadings();
+											last_layer = 4;
+											$('#statusmsgs')
+													.html(
+															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">ACCELERATION</span></p>');
+											hideSpinner();
+											if (current_state == 0) {
+
+												initialReq = true;
+												makeInitialRequest();
+											}
+
+										} else if (a.name == "Gyroscope"
+												&& current_layer != 5) {
+
+											resetToGyroReadings();
+											last_layer = 5;
+											$('#statusmsgs')
+													.html(
+															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">GYROSCOPE</span></p>');
+											hideSpinner();
+											if (current_state == 0) {
+
+												initialReq = true;
+												makeInitialRequest();
+											}
+
+										} else if (a.name == "Temperature"
+												&& current_layer != 3) {
+
+											resetToTemperatureReadings();
+											last_layer = 3;
+											$('#statusmsgs')
+													.html(
+															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">TEMPERATURE</span></p>');
+											hideSpinner();
+											if (current_state == 0) {
+
+												initialReq = true;
+												makeInitialRequest();
+											}
+
 										}
 									});
 
@@ -438,14 +588,19 @@ $(document)
 						removeAllMarkers();
 						if (current_layer != 1)
 							legendLight.addTo(map);
+						
 						if (last_layer == 2)
 							legendSound.removeFrom(map);
+						else if (last_layer == 3)
+							legendTemperature.removeFrom(map);
+						else if (last_layer == 4)
+							legendAccelerometer.removeFrom(map);
+						else if (last_layer == 5)
+							legendGyro.removeFrom(map);
 
 						current_layer = 1;
 						lightMarkers.addLayer(pruneCluster);
 						map.addLayer(lightMarkers);
-						
-
 					}
 
 					function resetToNoiseReadings() {
@@ -455,25 +610,96 @@ $(document)
 
 						if (last_layer == 1)
 							legendLight.removeFrom(map);
+						else if (last_layer == 3)
+							legendTemperature.removeFrom(map);
+						else if (last_layer == 4)
+							legendAccelerometer.removeFrom(map);
+						else if (last_layer == 5)
+							legendGyro.removeFrom(map);
 
 						current_layer = 2;
-
 						noiseMarkers.addLayer(pruneCluster);
 						map.addLayer(noiseMarkers);
 					}
 
 					function resetToMessagesOverlay() {
-					
 						removeAllMarkers();
 
 						if (last_layer == 2)
 							legendSound.removeFrom(map);
 						else if (last_layer == 1)
 							legendLight.removeFrom(map);
+						else if (last_layer == 3)
+							legendTemperature.removeFrom(map);
+						else if (last_layer == 4)
+							legendAccelerometer.removeFrom(map);
+						else if (last_layer == 5)
+							legendGyro.removeFrom(map);
+
 						current_layer = 0;
 						msgMarkers.addLayer(pruneCluster);
 						map.addLayer(msgMarkers);
 
+					}
+					
+					function resetToTemperatureReadings() {
+						removeAllMarkers();
+						if (current_layer != 3)
+							legendTemperature.addTo(map);
+
+						if (last_layer == 1)
+							legendLight.removeFrom(map);
+						else if (last_layer == 2)
+							legendSound.removeFrom(map);
+						else if (last_layer == 4)
+							legendAccelerometer.removeFrom(map);
+						else if (last_layer == 5)
+							legendGyro.removeFrom(map);
+
+						current_layer = 3;
+
+						temperatureMarkers.addLayer(pruneCluster);
+						map.addLayer(temperatureMarkers);
+					}
+					
+					function resetToAccelerometerReadings() {
+						removeAllMarkers();
+						if (current_layer != 2)
+							legendAccelerometer.addTo(map);
+
+						if (last_layer == 1)
+							legendLight.removeFrom(map);
+						else if (last_layer == 3)
+							legendTemperature.removeFrom(map);
+						else if (last_layer == 2)
+							legendSound.removeFrom(map);
+						else if (last_layer == 5)
+							legendGyro.removeFrom(map);
+
+						current_layer = 4;
+
+						accelerometerMarkers.addLayer(pruneCluster);
+						map.addLayer(accelerometerMarkers);
+					}
+					
+					function resetToGyroReadings() {
+						removeAllMarkers();
+						if (current_layer != 2)
+							legendGyro.addTo(map);
+
+						if (last_layer == 1)
+							legendLight.removeFrom(map);
+						else if (last_layer == 3)
+							legendTemperature.removeFrom(map);
+						else if (last_layer == 4)
+							legendAccelerometer.removeFrom(map);
+						else if (last_layer == 2)
+							legendSound.removeFrom(map);
+
+						current_layer = 5;
+
+						gyroMarkers.addLayer(pruneCluster);
+						map.addLayer(gyroMarkers);
 					}
 
 					function removeAllMarkers() {
@@ -486,10 +712,16 @@ $(document)
 						pruneCluster.RemoveMarkers();
 						lightMarkers.clearLayers();
 						noiseMarkers.clearLayers();
+						accelerometerMarkers.clearLayers();
+						temperatureMarkers.clearLayers();
+						gyroMarkers.clearLayers();
 						msgMarkers.clearLayers();
 						map.removeLayer(lightMarkers);
 						map.removeLayer(noiseMarkers);
+						map.removeLayer(accelerometerMarkers);
 						map.removeLayer(msgMarkers);
+						map.removeLayer(temperatureMarkers);
+						map.removeLayer(gyroMarkers);
 						counter = 0;
 						if (DEBUG) {
 							console
@@ -532,7 +764,52 @@ $(document)
 										: d > 0 ? 1 : 0;
 					}
 
+					function getTemperatureId(d) {
+						return d > 40 ? 7 : d > 30 ? 6 : d > 20 ? 5
+								: d > 10 ? 4 : d > 0 ? 3 : d > -10 ? 2
+										: d > -20 ? 1 : -30;
+					}
+
+					function getAccelerometerId(d) {
+						return d > 140 ? 7 : d > 120 ? 6 : d > 100 ? 5
+								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2
+										: d > 10 ? 1 : 0;
+					}
+
+					function getGyroId(d) {
+						return d > 140 ? 7 : d > 120 ? 6 : d > 100 ? 5
+								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2
+										: d > 10 ? 1 : 0;
+					}
+
 					function getNoiseColor(d) {
+						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
+								: d > 100 ? '#E31A1C' : d > 70 ? '#FC4E2A'
+										: d > 50 ? '#FD8D3C'
+												: d > 30 ? '#FEB24C'
+														: d > 10 ? '#FED976'
+																: '#FFEDA0';
+					}
+
+					function getTemperatureColor(d) {
+						return d > 40 ? '#800026' : d > 30 ? '#BD0026'
+								: d > 20 ? '#E31A1C' : d > 10 ? '#FC4E2A'
+										: d > 0 ? '#FD8D3C'
+												: d > -10 ? '#FEB24C'
+														: d > -20 ? '#FED976'
+																: '#FFEDA0';
+					}
+
+					function getAccelerometerColor(d) {
+						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
+								: d > 100 ? '#E31A1C' : d > 70 ? '#FC4E2A'
+										: d > 50 ? '#FD8D3C'
+												: d > 30 ? '#FEB24C'
+														: d > 10 ? '#FED976'
+																: '#FFEDA0';
+					}
+
+					function getGyroColor(d) {
 						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
 								: d > 100 ? '#E31A1C' : d > 70 ? '#FC4E2A'
 										: d > 50 ? '#FD8D3C'
@@ -800,6 +1077,120 @@ $(document)
 								markerArray.push(msgMarker);
 								pruneCluster.RegisterMarker(msgMarker);
 								showPopup(L.latLng(msg.geometry.coordinates[0],msg.geometry.coordinates[1]), msgMarker.data.popup);
+							} else if (msg.properties.readingType == 5
+									&& current_layer == 3) {
+								var temperatureMarker = new PruneCluster.Marker(
+										msg.geometry.coordinates[0],
+										msg.geometry.coordinates[1]);
+								temperatureMarker.data.popup = '<p style="color:black"  ><strong>'
+										+ msg.properties.level
+										+ '</strong> db<br>';
+								// +msg.geometry.coordinates[0]+',
+								// '+msg.geometry.coordinates[1];
+
+								// TODO --- required for initial request coz
+								// timemachine data does not send time.
+								// BUg here since TemperatureMarker.data.name is
+								// undefined, set it to current time. This might
+								// cause problem with Time-machine feature.
+								if (msg.properties.recordTime === undefined) {
+									temperatureMarker.data.name = new Date()
+											.getTime();
+								} else
+									temperatureMarker.data.name = msg.properties.recordTime;
+
+								temperatureMarker.data.weight = getTemperatureId(msg.properties.level); // Weight
+								// is
+								// the
+								// level
+								// of
+								// Light
+								// or
+								// Temperature
+								temperatureMarker.data.category = msg.properties.readingType; // Category
+								// is
+								// readingType
+								temperatureMarker.weight = getTemperatureId(msg.properties.level);
+								markerArray.push(temperatureMarker);
+								pruneCluster.RegisterMarker(temperatureMarker);
+								showPopup(L.latLng(msg.geometry.coordinates[0],msg.geometry.coordinates[1]), temperatureMarker.data.popup);
+
+							} else if (msg.properties.readingType == 3
+									&& current_layer == 4) {
+								var accelerometerMarker = new PruneCluster.Marker(
+										msg.geometry.coordinates[0],
+										msg.geometry.coordinates[1]);
+								accelerometerMarker.data.popup = '<p style="color:black"  ><strong>'
+										+ msg.properties.level
+										+ '</strong> db<br>';
+								// +msg.geometry.coordinates[0]+',
+								// '+msg.geometry.coordinates[1];
+
+								// TODO --- required for initial request coz
+								// timemachine data does not send time.
+								// BUg here since AccelerometerMarker.data.name is
+								// undefined, set it to current time. This might
+								// cause problem with Time-machine feature.
+								if (msg.properties.recordTime === undefined) {
+									accelerometerMarker.data.name = new Date()
+											.getTime();
+								} else
+									accelerometerMarker.data.name = msg.properties.recordTime;
+
+								accelerometerMarker.data.weight = getAccelerometerId(msg.properties.level); // Weight
+								// is
+								// the
+								// level
+								// of
+								// Light
+								// or
+								// Accelerometer
+								accelerometerMarker.data.category = msg.properties.readingType; // Category
+								// is
+								// readingType
+								accelerometerMarker.weight = getAccelerometerId(msg.properties.level);
+								markerArray.push(accelerometerMarker);
+								pruneCluster.RegisterMarker(accelerometerMarker);
+								showPopup(L.latLng(msg.geometry.coordinates[0],msg.geometry.coordinates[1]), accelerometerMarker.data.popup);
+
+							} else if (msg.properties.readingType == 4
+									&& current_layer == 5) {
+								var gyroMarker = new PruneCluster.Marker(
+										msg.geometry.coordinates[0],
+										msg.geometry.coordinates[1]);
+								gyroMarker.data.popup = '<p style="color:black"  ><strong>'
+										+ msg.properties.level
+										+ '</strong> db<br>';
+								// +msg.geometry.coordinates[0]+',
+								// '+msg.geometry.coordinates[1];
+
+								// TODO --- required for initial request coz
+								// timemachine data does not send time.
+								// BUg here since GyroMarker.data.name is
+								// undefined, set it to current time. This might
+								// cause problem with Time-machine feature.
+								if (msg.properties.recordTime === undefined) {
+									gyroMarker.data.name = new Date()
+											.getTime();
+								} else
+									gyroMarker.data.name = msg.properties.recordTime;
+
+								gyroMarker.data.weight = getGyroId(msg.properties.level); // Weight
+								// is
+								// the
+								// level
+								// of
+								// Light
+								// or
+								// Gyro
+								gyroMarker.data.category = msg.properties.readingType; // Category
+								// is
+								// readingType
+								gyroMarker.weight = getGyroId(msg.properties.level);
+								markerArray.push(gyroMarker);
+								pruneCluster.RegisterMarker(gyroMarker);
+								showPopup(L.latLng(msg.geometry.coordinates[0],msg.geometry.coordinates[1]), gyroMarker.data.popup);
+
 							}
 
 							return true;
@@ -963,7 +1354,7 @@ $(document)
 							sendTimeMachineRequest(current_layer == 0 ? 2
 									: current_layer == 1 ? 0 : 1, date
 									.getTime()
-									- (60000 * 100000), date.getTime());
+									- (60000 * 300000), date.getTime());
 
 						}
 						/** ************* */
@@ -1065,6 +1456,15 @@ $(document)
 						} else if (current_layer == 0) {
 							msgMarkers.addLayer(pruneCluster);
 							map.addLayer(msgMarkers);
+						} else if (current_layer == 3) {
+							temperatureMarkers.addLayer(pruneCluster);
+							map.addLayer(temperatureMarkers)
+						} else if (current_layer == 4) {
+							accelerometerMarkers.addLayer(pruneCluster);
+							map.addLayer(accelerometerMarkers)
+						} else if (current_layer == 5) {
+							gyroMarkers.addLayer(pruneCluster);
+							map.addLayer(gyroMarkers)
 						}
 					}
 
@@ -1333,6 +1733,18 @@ $(document)
 							c += ((cluster.totalWeight / cluster.population)
 									.toFixed());
 						} else if (current_layer == 2) {
+							c += "-1-"
+							c += ((cluster.totalWeight / cluster.population)
+									.toFixed());
+						} else if (current_layer == 3) {
+							c += "-1-"
+							c += ((cluster.totalWeight / cluster.population)
+									.toFixed());
+						} else if (current_layer == 4) {
+							c += "-1-"
+							c += ((cluster.totalWeight / cluster.population)
+									.toFixed());
+						} else if (current_layer == 5) {
 							c += "-1-"
 							c += ((cluster.totalWeight / cluster.population)
 									.toFixed());

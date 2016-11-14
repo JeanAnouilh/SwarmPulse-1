@@ -31,14 +31,20 @@ public class AccReading extends Visual implements Serializable {
 
 	public double x, y, z;
 
-	public AccReading(String uuid, double x, double y, double z, long timestamp, VisualLocation location) {
+	public AccReading() {
+		
+	}
+	
+	public AccReading(String uuid, double x, double y, double z, long timestamp, long volatility, VisualLocation location) {
+		type = 3;
 		this.uuid = uuid;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.timestamp = timestamp;
+		this.volatility = volatility;
 		this.location = location;
-		serialVersionUID = 1L;
+		serialVersionUID = 3L;
 	}
 
 	@Override

@@ -32,7 +32,6 @@ import org.java_websocket.WebSocketImpl;
 import ch.ethz.coss.nervous.pulse.socket.PulseConcurrentServer;
 import ch.ethz.coss.nervous.pulse.socket.PulseRequestHandlingServer;
 import ch.ethz.coss.nervous.pulse.socket.SqlFetchWorkerFactory;
-import ch.ethz.coss.nervous.pulse.sql.PulseElementConfiguration;
 import ch.ethz.coss.nervous.pulse.sql.SqlConnection;
 import ch.ethz.coss.nervous.pulse.sql.SqlSetup;
 import ch.ethz.coss.nervous.pulse.sql.SqlUploadWorkerFactory;

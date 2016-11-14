@@ -21,38 +21,34 @@
  *
  *
  * 	Author:
- * 	Prasad Pulikal - prasad.pulikal@gess.ethz.ch  - Initial design and implementation
- *  Dario Leuchtmann - ldario@student.ethz.ch - Add Acc and Gyro
+ * 	Dario Leuchtmann - ldario@student.ethz.ch  - Implementation
  *******************************************************************************/
-package ch.ethz.coss.nervous.pulse;
+package ch.ethz.coss.nervous.pulse.model;
 
-public class PulseConstants {
+import java.io.Serializable;
 
-	public static String PULSE_LIGHT_LABEL = "Light";
-	public static String PULSE_NOISE_LABEL = "Noise";
-	public static String PULSE_TEXT_LABEL = "Message";
-	public static String PULSE_ACC_LABEL = "Acc";
-	public static String PULSE_GYRO_LABEL = "Gyro";
-	public static String PULSE_TEMPERATURE_LABEL = "Temperature";
+public class GyroReading extends Visual implements Serializable {
 
-	public static String getLabel(int readingType) {
-
-		switch (readingType) {
-		case 0:
-		default:
-			return PULSE_LIGHT_LABEL;
-		case 1:
-			return PULSE_NOISE_LABEL;
-		case 2:
-			return PULSE_TEXT_LABEL;
-		case 3:
-			return PULSE_ACC_LABEL;
-		case 4:
-			return PULSE_GYRO_LABEL;
-		case 5:
-			return PULSE_TEMPERATURE_LABEL;
-
-		}
+	public double x, y, z;
+	
+	public GyroReading() {
+		
 	}
 
+	public GyroReading(String uuid, double x, double y, double z, long timestamp, long volatility, VisualLocation location) {
+		type = 4;
+		this.uuid = uuid;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.timestamp = timestamp;
+		this.volatility = volatility;
+		this.location = location;
+		serialVersionUID = 4L;
+	}
+
+	@Override
+	public String toString() {
+		return "GyroReading = (" + "," + timestamp + ") -> " + "(" + x + "," + y + "," + z + ")";
+	}
 }

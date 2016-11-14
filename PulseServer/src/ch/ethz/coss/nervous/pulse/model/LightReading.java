@@ -43,7 +43,7 @@ public class LightReading extends Visual implements Serializable {
 		this.timestamp = timestamp;
 		this.volatility = volatility;
 		this.location = loc;
-		serialVersionUID = 2L;
+		serialVersionUID = 0L;
 	}
 
 	@Override

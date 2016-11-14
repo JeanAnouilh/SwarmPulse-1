@@ -43,7 +43,7 @@ public class NoiseReading extends Visual implements Serializable {
 		this.timestamp = timestamp;
 		this.volatility = volatility;
 		this.location = loc;
-		serialVersionUID = 3L;
+		serialVersionUID = 1L;
 	}
 
 	@Override

@@ -4,14 +4,14 @@
     <logDisplayVerbosity>15</logDisplayVerbosity>
     <logPath>log.txt</logPath>
     <logWriteVerbosity>15</logWriteVerbosity>
-    <serverPortApps>8445</serverPortApps>
+    <serverPortApps>8447</serverPortApps>
         <serverPortClient>8446</serverPortClient>
             <serverThreads>5</serverThreads>
             <sqlHostname>localhost</sqlHostname>
-            <sqlPassword>HV4VmVRnBY92EpDb</sqlPassword>
+            <sqlPassword>w4Zfth8ZU2L3qWXd</sqlPassword>
             <sqlPort>3306</sqlPort>
-            <sqlUsername>prasad</sqlUsername>
-            <sqlDatabase>prasad</sqlDatabase>
+            <sqlUsername>swarm_pulse_user</sqlUsername>
+            <sqlDatabase>swarm_pulse</sqlDatabase>
             <sqlsensors>
                  <sensor>
                     <sensorName>Light</sensorName>
@@ -56,6 +56,76 @@
                         <attribute>
                             <name>Message</name>
                             <type>VARCHAR</type>
+                        </attribute>
+                        <attribute>
+                            <name>Lat</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>Lon</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                    </attributes>
+                </sensor>
+                <sensor>
+                    <sensorName>Accelerometer</sensorName>
+                    <sensorID>0000000000000003</sensorID>
+                    <attributes>
+                        <attribute>
+                            <name>x</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>y</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>z</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>Lat</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>Lon</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                    </attributes>
+                </sensor>
+                <sensor>
+                    <sensorName>Gyroscope</sensorName>
+                    <sensorID>0000000000000004</sensorID>
+                    <attributes>
+                        <attribute>
+                            <name>x</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>y</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>z</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>Lat</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                        <attribute>
+                            <name>Lon</name>
+                            <type>FLOAT</type>
+                        </attribute>
+                    </attributes>
+                </sensor>
+                <sensor>
+                    <sensorName>Temperature</sensorName>
+                    <sensorID>0000000000000005</sensorID>
+                    <attributes>
+                        <attribute>
+                            <name>Temperature</name>
+                            <type>FLOAT</type>
                         </attribute>
                         <attribute>
                             <name>Lat</name>

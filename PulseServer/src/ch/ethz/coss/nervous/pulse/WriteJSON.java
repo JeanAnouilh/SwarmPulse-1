@@ -22,6 +22,7 @@
  *
  * 	Author:
  * 	Prasad Pulikal - prasad.pulikal@gess.ethz.ch  - Initial design and implementation
+ *  Dario Leuchtmann - ldario@student.ethz.ch - Add Acc and Gyro
  *******************************************************************************/
 package ch.ethz.coss.nervous.pulse;
 
@@ -32,6 +33,9 @@ import java.util.Scanner;
 
 import ch.ethz.coss.nervous.pulse.model.LightReading;
 import ch.ethz.coss.nervous.pulse.model.NoiseReading;
+import ch.ethz.coss.nervous.pulse.model.AccReading;
+import ch.ethz.coss.nervous.pulse.model.GyroReading;
+import ch.ethz.coss.nervous.pulse.model.TemperatureReading;
 import ch.ethz.coss.nervous.pulse.model.TextVisual;
 import ch.ethz.coss.nervous.pulse.model.Visual;
 
@@ -138,6 +142,19 @@ public class WriteJSON {
 				} else if (reading.type == 2) {
 					properties.addProperty("readingType", "" + 2);
 					properties.addProperty("message", "" + ((TextVisual) reading).textMsg);
+				} else if (reading.type == 3) {
+					properties.addProperty("readingType", "" + 3);
+					properties.addProperty("x", "" + ((AccReading) reading).x);
+					properties.addProperty("y", "" + ((AccReading) reading).y);
+					properties.addProperty("z", "" + ((AccReading) reading).z);
+				} else if (reading.type == 4) {
+					properties.addProperty("readingType", "" + 4);
+					properties.addProperty("x", "" + ((GyroReading) reading).x);
+					properties.addProperty("y", "" + ((GyroReading) reading).y);
+					properties.addProperty("z", "" + ((GyroReading) reading).z);
+				} else if (reading.type == 5) {
+					properties.addProperty("readingType", "" + 5);
+					properties.addProperty("temperatureLevel", "" + ((TemperatureReading) reading).temperatureVal);
 				} else {
 					// System.out.println("Reading instance not known");
 				}

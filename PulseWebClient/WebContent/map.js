@@ -128,8 +128,8 @@ $(document)
 							"Light" : lightMarkers,
 							"Sound" : noiseMarkers,
 							"Temperature" : temperatureMarkers,
-							"Acceleration" : accelerometerMarkers,
-							"Gyroscope" : gyroMarkers
+							//"Acceleration" : accelerometerMarkers, TODO
+							//"Gyroscope" : gyroMarkers
 
 						}
 					};
@@ -399,7 +399,7 @@ $(document)
 
 													resetToTemperatureReadings();
 													last_layer = 3;
-												} else if (current_layer == 4) {
+												} /*else if (current_layer == 4) { TODO
 
 													resetToAccelerometerReadings();
 													last_layer = 4;
@@ -407,7 +407,7 @@ $(document)
 
 													resetToGyroReadings();
 													last_layer = 5;
-												}
+												}*/
 												changeSocketToRealTime();
 
 												$('#datePicker').hide(0);
@@ -536,7 +536,7 @@ $(document)
 												makeInitialRequest();
 											}
 
-										} else if (a.name == "Acceleration"
+										} /*else if (a.name == "Acceleration" TODO
 												&& current_layer != 4) {
 
 											resetToAccelerometerReadings();
@@ -566,7 +566,7 @@ $(document)
 												makeInitialRequest();
 											}
 
-										} else if (a.name == "Temperature"
+										} */else if (a.name == "Temperature"
 												&& current_layer != 3) {
 
 											resetToTemperatureReadings();
@@ -593,11 +593,11 @@ $(document)
 							legendSound.removeFrom(map);
 						else if (last_layer == 3)
 							legendTemperature.removeFrom(map);
-						else if (last_layer == 4)
+						/*else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);
-
+							legendGyro.removeFrom(map);TODO
+						*/
 						current_layer = 1;
 						lightMarkers.addLayer(pruneCluster);
 						map.addLayer(lightMarkers);
@@ -612,11 +612,11 @@ $(document)
 							legendLight.removeFrom(map);
 						else if (last_layer == 3)
 							legendTemperature.removeFrom(map);
-						else if (last_layer == 4)
+						/*else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);
-
+							legendGyro.removeFrom(map);TODO
+						*/
 						current_layer = 2;
 						noiseMarkers.addLayer(pruneCluster);
 						map.addLayer(noiseMarkers);
@@ -631,11 +631,11 @@ $(document)
 							legendLight.removeFrom(map);
 						else if (last_layer == 3)
 							legendTemperature.removeFrom(map);
-						else if (last_layer == 4)
+						/*else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);
-
+							legendGyro.removeFrom(map);TODO
+						*/
 						current_layer = 0;
 						msgMarkers.addLayer(pruneCluster);
 						map.addLayer(msgMarkers);
@@ -651,18 +651,18 @@ $(document)
 							legendLight.removeFrom(map);
 						else if (last_layer == 2)
 							legendSound.removeFrom(map);
-						else if (last_layer == 4)
+						/*else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);
-
+							legendGyro.removeFrom(map);TODO
+						*/
 						current_layer = 3;
 
 						temperatureMarkers.addLayer(pruneCluster);
 						map.addLayer(temperatureMarkers);
 					}
 					
-					function resetToAccelerometerReadings() {
+					/*function resetToAccelerometerReadings() { TODO
 						removeAllMarkers();
 						if (current_layer != 2)
 							legendAccelerometer.addTo(map);
@@ -700,7 +700,7 @@ $(document)
 
 						gyroMarkers.addLayer(pruneCluster);
 						map.addLayer(gyroMarkers);
-					}
+					}*/
 
 					function removeAllMarkers() {
 						if (DEBUG) {
@@ -712,16 +712,16 @@ $(document)
 						pruneCluster.RemoveMarkers();
 						lightMarkers.clearLayers();
 						noiseMarkers.clearLayers();
-						accelerometerMarkers.clearLayers();
+						//accelerometerMarkers.clearLayers();TODO
 						temperatureMarkers.clearLayers();
-						gyroMarkers.clearLayers();
+						//gyroMarkers.clearLayers();TODO
 						msgMarkers.clearLayers();
 						map.removeLayer(lightMarkers);
 						map.removeLayer(noiseMarkers);
-						map.removeLayer(accelerometerMarkers);
+						//map.removeLayer(accelerometerMarkers);TODO
 						map.removeLayer(msgMarkers);
 						map.removeLayer(temperatureMarkers);
-						map.removeLayer(gyroMarkers);
+						//map.removeLayer(gyroMarkers);TODO
 						counter = 0;
 						if (DEBUG) {
 							console
@@ -770,17 +770,17 @@ $(document)
 										: d > -20 ? 1 : -30;
 					}
 
-					function getAccelerometerId(d) {
+					/*function getAccelerometerId(d) {
 						return d > 140 ? 7 : d > 120 ? 6 : d > 100 ? 5
-								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2
+								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2 TODO
 										: d > 10 ? 1 : 0;
-					}
+					}*/
 
-					function getGyroId(d) {
+					/*function getGyroId(d) {
 						return d > 140 ? 7 : d > 120 ? 6 : d > 100 ? 5
-								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2
+								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2 TODO
 										: d > 10 ? 1 : 0;
-					}
+					}*/
 
 					function getNoiseColor(d) {
 						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
@@ -800,23 +800,23 @@ $(document)
 																: '#FFEDA0';
 					}
 
-					function getAccelerometerColor(d) {
+					/*function getAccelerometerColor(d) {
 						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
 								: d > 100 ? '#E31A1C' : d > 70 ? '#FC4E2A'
 										: d > 50 ? '#FD8D3C'
 												: d > 30 ? '#FEB24C'
 														: d > 10 ? '#FED976'
-																: '#FFEDA0';
-					}
+																: '#FFEDA0'; TODO
+					}*/
 
-					function getGyroColor(d) {
+					/*function getGyroColor(d) {
 						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
 								: d > 100 ? '#E31A1C' : d > 70 ? '#FC4E2A'
 										: d > 50 ? '#FD8D3C'
 												: d > 30 ? '#FEB24C'
 														: d > 10 ? '#FED976'
-																: '#FFEDA0';
-					}
+																: '#FFEDA0'; TODO
+					}*/
 
 					function getLightColor(d) {
 						return d > 100000 ? '#800026' : d > 10000 ? '#BD0026'
@@ -1313,7 +1313,8 @@ $(document)
 							return;
 						}
 
-						websocket = new WebSocket("ws://129.132.255.27:8446");
+						websocket = new WebSocket("ws://129.132.255.27:8446"); 
+						//websocket = new WebSocket("ws://localhost:8446");TODO IP
 						websocket.onopen = function(evt) {
 							onOpen(evt)
 						};
@@ -1459,13 +1460,13 @@ $(document)
 						} else if (current_layer == 3) {
 							temperatureMarkers.addLayer(pruneCluster);
 							map.addLayer(temperatureMarkers)
-						} else if (current_layer == 4) {
+						} /*else if (current_layer == 4) { TODO
 							accelerometerMarkers.addLayer(pruneCluster);
 							map.addLayer(accelerometerMarkers)
 						} else if (current_layer == 5) {
 							gyroMarkers.addLayer(pruneCluster);
 							map.addLayer(gyroMarkers)
-						}
+						} */
 					}
 
 					window.prepareTimeMachineReq = function() {

@@ -26,10 +26,10 @@
 $(document)
 		.ready(
 				function() {
-					var DEBUG = false;
+					var DEBUG = true;
 					var websocket;
 					var counter = 0;
-					var current_state = 0; // 0 - Real-Time, 1 - Time-Machine
+					var current_state = 0; // 0 - Real-Time, 1 - Time-Machine, 2 - Value-Picker
 					var current_layer = -1;
 					var last_layer = 0;
 					var initialReq = true;// jhkjhkhkhk marker not clearing
@@ -189,23 +189,24 @@ $(document)
 						var div = L.DomUtil.create('div', 'label');
 						var lightGrades = [ 0, 1, 5, 10, 100, 1000, 10000,
 								100000 ];
-						var lightLabels = [ "0", "1-5", "5-10", "10-100",
-								"100-1000", "1000-10000", " 10000-100000 ",
-								"100000+" ];
+						var lightLabels = [ "0", "1-5", "6-10", "11-100",
+								"101-1000", "1001-10000", " 10001-100000 ",
+								"100001+" ];
 
 						div.style.border = "1px solid #ffffff";
 						div.style.borderRadius = "2px";
 						div.style.backgroundColor = "#2A2A2A";
 						div.style.color = "#ffffff";
 						div.style.fontSize = "80%";
-						div.innerHTML = '<p align: \'bottom\'  style=\'color: #FFFFFF;   display:inline-block;\'> Light Level (lux)</p>  <br>';
+						div.innerHTML = '<p align: \'bottom\'  style=\'color: #FFFFFF;   display:inline-block;\'> Light Level (lux)&nbsp;&nbsp;&nbsp;&nbsp;</p><br>';
 
 						for (var i = 0; i < lightGrades.length; i++) {
 
-							div.innerHTML += '<img align = "left"  width=\'10px\' height=\'10px\' style="background-color:'
-									+ getLightColor(lightGrades[i] + 1)
-									+ '"> <p align: \'left\' style=\'color: #FFA500; display:inline-block; \'>'
-									+ lightLabels[i] + ' </p><br>';
+							div.innerHTML += '<div class="squaredThree left"><input type="checkbox" value="' + lightGrades[i] + 1 + '" id="squaredThree.' + lightGrades[i] + '" name="check' + lightGrades[i] + '" checked><label id= "lightCheckBox" for="squaredThree.' + lightGrades[i] + '" style="background-color:' + getLightColor(lightGrades[i] + 1) + '"></label>'
+									//+ getLightColor(lightGrades[i] + 1)
+									//+ '"> <p align: \'left\' style=\'color: #FFA500; display:inline-block; \'>'
+									+ '<p align: \'left\' style=\'color: #FFA500; display:inline-block; \'>'
+									+ lightLabels[i] + '</p></div>';
 
 						}
 						return div;
@@ -363,12 +364,13 @@ $(document)
 															.log("******LOG*******Inside onClick realTime Button");
 												}
 												control.state("timeMachine");
+												//$('valueSelectionButton').state("allValues");
 												changeSocketToTimeMachine();
 
 												resetBeforeSendingTimeMachineRequest();
 
+												$('#valuePicker').hide(0);
 												$('#datePicker').show(0);
-
 											}
 										},
 										{
@@ -419,6 +421,82 @@ $(document)
 
 					realTimeButton.addTo(map);
 					realTimeButton.state('realTime');
+					
+					/** *************************** */
+					/**
+					 * ***********Value Selection or All Values
+					 * Button****************
+					 */
+					var valueSelectionButton = L
+							.easyButton({
+								states : [
+										{
+											stateName : 'allValues',
+											icon : 'fa-square-o fa-lg',
+											title : 'Value-Selection',
+											onClick : function(control) {
+												if (DEBUG) {
+													console
+															.log("******LOG*******Inside onClick allValues Button");
+												}
+												//$('realTimeButton').state("realTime");
+												control.state("valueSelection");
+												changeSocketToValuePicker();
+
+												resetBeforeSendingValueRequest();
+
+												$('#datePicker').hide(0);
+												$('#valuePicker').show(0);
+											}
+										},
+										{
+											stateName : 'valueSelection',
+											icon : 'fa-check-square-o fa-lg',
+											title : 'Value-Selection',
+											onClick : function(control) {
+												if (DEBUG) {
+													console
+															.log("******LOG*******Inside onClick valueSelection button");
+												}
+												control.state("allValues");
+
+												if (current_layer == 0) {
+
+													resetToMessagesOverlay();
+													last_layer = 0;
+												} else if (current_layer == 1) {
+
+													resetToLightReadings();
+
+													last_layer = 1;
+												} else if (current_layer == 2) {
+
+													resetToNoiseReadings();
+													last_layer = 2;
+												} else if (current_layer == 3) {
+
+													resetToTemperatureReadings();
+													last_layer = 3;
+												} /*else if (current_layer == 4) { TODO
+
+													resetToAccelerometerReadings();
+													last_layer = 4;
+												} else if (current_layer == 5) {
+
+													resetToGyroReadings();
+													last_layer = 5;
+												}*/
+												changeSocketToRealTime();
+
+												$('#valuePicker').hide(0);
+											}
+										} ],	
+								position : "topright"
+
+							});
+
+					valueSelectionButton.addTo(map);
+					valueSelectionButton.state('valueSelection');
 
 					/** *************************** */
 					
@@ -483,106 +561,103 @@ $(document)
 					/** ********** */
 
 					mapStandard.addTo(map);
-
 					map
-							.on(
-									'overlayadd',
-									function(a) {
+						.on(
+							'overlayadd',
+							function(a) {
+								if (a.name == "Light"
+										&& current_layer != 1) {
+									resetToLightReadings();
+									last_layer = 1;
 
-										if (a.name == "Light"
-												&& current_layer != 1) {
+									hideSpinner();
+									if (current_state == 0) {
 
-											resetToLightReadings();
-											last_layer = 1;
+										initialReq = true;
+										makeInitialRequest();
+									}
+									$('#statusmsgs')
+											.html(
+													'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">LIGHT</span></p>');
 
-											hideSpinner();
-											if (current_state == 0) {
+								} else if (a.name == "Sound"
+										&& current_layer != 2) {
 
-												initialReq = true;
-												makeInitialRequest();
-											}
-											$('#statusmsgs')
-													.html(
-															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">LIGHT</span></p>');
+									resetToNoiseReadings();
+									last_layer = 2;
+									$('#statusmsgs')
+											.html(
+													'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">SOUND</span></p>');
 
-										} else if (a.name == "Sound"
-												&& current_layer != 2) {
+									hideSpinner();
+									if (current_state == 0) {
 
-											resetToNoiseReadings();
-											last_layer = 2;
-											$('#statusmsgs')
-													.html(
-															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">SOUND</span></p>');
+										initialReq = true;
+										makeInitialRequest();
+									}
+								} else if (a.name == "Messages"
+										&& current_layer != 0) {
 
-											hideSpinner();
-											if (current_state == 0) {
+									// current_layer = 2;
+									resetToMessagesOverlay();
+									last_layer = 0;
+									$('#statusmsgs')
+											.html(
+													'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">MESSAGES</span></p>');
+									hideSpinner();
+									if (current_state == 0) {
 
-												initialReq = true;
-												makeInitialRequest();
-											}
-										} else if (a.name == "Messages"
-												&& current_layer != 0) {
+										initialReq = true;
+										makeInitialRequest();
+									}
 
-											// current_layer = 2;
-											resetToMessagesOverlay();
-											last_layer = 0;
-											$('#statusmsgs')
-													.html(
-															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">MESSAGES</span></p>');
-											hideSpinner();
-											if (current_state == 0) {
+								} /*else if (a.name == "Acceleration" TODO
+										&& current_layer != 4) {
 
-												initialReq = true;
-												makeInitialRequest();
-											}
+									resetToAccelerometerReadings();
+									last_layer = 4;
+									$('#statusmsgs')
+											.html(
+													'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">ACCELERATION</span></p>');
+									hideSpinner();
+									if (current_state == 0) {
 
-										} /*else if (a.name == "Acceleration" TODO
-												&& current_layer != 4) {
+										initialReq = true;
+										makeInitialRequest();
+									}
 
-											resetToAccelerometerReadings();
-											last_layer = 4;
-											$('#statusmsgs')
-													.html(
-															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">ACCELERATION</span></p>');
-											hideSpinner();
-											if (current_state == 0) {
+								} else if (a.name == "Gyroscope"
+										&& current_layer != 5) {
 
-												initialReq = true;
-												makeInitialRequest();
-											}
+									resetToGyroReadings();
+									last_layer = 5;
+									$('#statusmsgs')
+											.html(
+													'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">GYROSCOPE</span></p>');
+									hideSpinner();
+									if (current_state == 0) {
 
-										} else if (a.name == "Gyroscope"
-												&& current_layer != 5) {
+										initialReq = true;
+										makeInitialRequest();
+									}
 
-											resetToGyroReadings();
-											last_layer = 5;
-											$('#statusmsgs')
-													.html(
-															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">GYROSCOPE</span></p>');
-											hideSpinner();
-											if (current_state == 0) {
+								} */else if (a.name == "Temperature"
+										&& current_layer != 3) {
 
-												initialReq = true;
-												makeInitialRequest();
-											}
+									resetToTemperatureReadings();
+									last_layer = 3;
+									$('#statusmsgs')
+											.html(
+													'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">TEMPERATURE</span></p>');
+									hideSpinner();
+									if (current_state == 0) {
 
-										} */else if (a.name == "Temperature"
-												&& current_layer != 3) {
-
-											resetToTemperatureReadings();
-											last_layer = 3;
-											$('#statusmsgs')
-													.html(
-															'<p style="text-align:center;"><span style="font-family:Helvetica;font-size:16px;font-style:normal;font-weight:bold;text-decoration:none;text-transform:uppercase;color:FFFFFF;">TEMPERATURE</span></p>');
-											hideSpinner();
-											if (current_state == 0) {
-
-												initialReq = true;
-												makeInitialRequest();
-											}
-
-										}
-									});
+										initialReq = true;
+										makeInitialRequest();
+									}
+								}
+							}
+						);
 
 					function resetToLightReadings() {
 						removeAllMarkers();
@@ -639,7 +714,6 @@ $(document)
 						current_layer = 0;
 						msgMarkers.addLayer(pruneCluster);
 						map.addLayer(msgMarkers);
-
 					}
 					
 					function resetToTemperatureReadings() {
@@ -767,7 +841,7 @@ $(document)
 					function getTemperatureId(d) {
 						return d > 40 ? 7 : d > 30 ? 6 : d > 20 ? 5
 								: d > 10 ? 4 : d > 0 ? 3 : d > -10 ? 2
-										: d > -20 ? 1 : -30;
+										: d > -20 ? 1 : 0;
 					}
 
 					/*function getAccelerometerId(d) {
@@ -978,6 +1052,7 @@ $(document)
 
 								// lightMarker.data.id =
 								// msg.properties.readingType;
+								//TODO msg.properties.level says the value of the marker
 								lightMarker.data.weight = getLightId(msg.properties.level); // Weight
 								// is
 								// the
@@ -1084,7 +1159,7 @@ $(document)
 										msg.geometry.coordinates[1]);
 								temperatureMarker.data.popup = '<p style="color:black"  ><strong>'
 										+ msg.properties.level
-										+ '</strong> db<br>';
+										+ '</strong> &deg;C<br>';
 								// +msg.geometry.coordinates[0]+',
 								// '+msg.geometry.coordinates[1];
 
@@ -1313,8 +1388,8 @@ $(document)
 							return;
 						}
 
-						websocket = new WebSocket("ws://129.132.255.27:8446"); 
-						//websocket = new WebSocket("ws://localhost:8446");TODO IP
+						//websocket = new WebSocket("ws://129.132.255.27:8446"); 
+						websocket = new WebSocket("ws://localhost:8446");//TODO IP
 						websocket.onopen = function(evt) {
 							onOpen(evt)
 						};
@@ -1352,10 +1427,7 @@ $(document)
 						if (initialReq) {
 							changeSocketToTimeMachine();
 							var date = new Date();
-							sendTimeMachineRequest(current_layer == 0 ? 2
-									: current_layer == 1 ? 0 : 1, date
-									.getTime()
-									- (60000 * 300000), date.getTime());
+							sendTimeMachineRequest(current_layer == 0 ? 2 : current_layer == 1 ? 0 : current_layer == 2 ? 1 : current_layer == 3 ? 5 : current_layer == 4 ? 3 : 4, date.getTime() - (60000 * 300000), date.getTime());
 
 						}
 						/** ************* */
@@ -1400,7 +1472,6 @@ $(document)
 									console
 											.log("*****LOG***** Initial Request set to false");
 								}
-
 							}
 
 						} else {
@@ -1427,6 +1498,11 @@ $(document)
 						L.popup().close;
 					}
 
+					function changeSocketToValuePicker() {
+						current_state = 2;
+						websocket.send('type=2');
+					}
+					
 					function changeSocketToTimeMachine() {
 						current_state = 1;
 						websocket.send('type=1');
@@ -1444,8 +1520,40 @@ $(document)
 						websocket.send('type=1,' + readingType + ','
 								+ startTime + ',' + endTime);
 					}
+					
+					function sendValueRequest(readingType, startValue,
+							endValue) {
+						showSpinner();
+						resetBeforeSendingValueRequest();
+						websocket.send('type=2,' + readingType + ','
+								+ startValue + ',' + endValue);
+					}
 
 					function resetBeforeSendingTimeMachineRequest() {
+						removeAllMarkers();
+
+						if (current_layer == 1) {
+							lightMarkers.addLayer(pruneCluster);
+							map.addLayer(lightMarkers)
+						} else if (current_layer == 2) {
+							noiseMarkers.addLayer(pruneCluster);
+							map.addLayer(noiseMarkers)
+						} else if (current_layer == 0) {
+							msgMarkers.addLayer(pruneCluster);
+							map.addLayer(msgMarkers);
+						} else if (current_layer == 3) {
+							temperatureMarkers.addLayer(pruneCluster);
+							map.addLayer(temperatureMarkers)
+						} /*else if (current_layer == 4) { TODO
+							accelerometerMarkers.addLayer(pruneCluster);
+							map.addLayer(accelerometerMarkers)
+						} else if (current_layer == 5) {
+							gyroMarkers.addLayer(pruneCluster);
+							map.addLayer(gyroMarkers)
+						} */
+					}
+					
+					function resetBeforeSendingValueRequest() {
 						removeAllMarkers();
 
 						if (current_layer == 1) {
@@ -1492,9 +1600,31 @@ $(document)
 							var millisec = dateAsObject.getTime()
 									+ timeAsObject.getTime()
 							var date = new Date(millisec);
-							sendTimeMachineRequest(current_layer == 0 ? 2
-									: current_layer == 1 ? 0 : 1, date
-									.getTime(), date.getTime() + (60000 * 30));
+							sendTimeMachineRequest(current_layer == 0 ? 2 : current_layer == 1 ? 0 : current_layer == 2 ? 1 : current_layer == 3 ? 5 : current_layer == 4 ? 3 : 4, date.getTime(), date.getTime() + (60000 * 30));
+
+						}
+
+					}
+					
+					window.prepareValueReq = function() {
+
+						var txtStart = document.getElementById('txtStart').value;
+						var txtEnd = document.getElementById('txtEnd').value;
+						if ((txtStart.length > 0) && (txtEnd.length == 0)) {
+							showAlert("Please do set a end Value.");
+							return false;
+						} else if ((txtStart.length == 0)
+								&& (txtEnd.length > 0)) {
+							showAlert("Please do set a start Value");
+							return false;
+						} else if ((txtStart.length == 0)
+								&& (txtEnd.length == 0)) {
+							showAlert("Please do set the start and end values.");
+							return false;
+						} else {
+							var startValue = txtStart;
+							var endValue = txtEnd;
+							sendValueRequest(current_layer == 0 ? 2 : current_layer == 1 ? 0 : current_layer == 2 ? 1 : current_layer == 3 ? 5 : current_layer == 4 ? 3 : 4, startValue, endValue);
 
 						}
 
@@ -1868,5 +1998,6 @@ $(document)
 						
 					resetToMessagesOverlay();
 					$('#datePicker').hide(0);
+					$('#valuePicker').hide(0);
 
 				});

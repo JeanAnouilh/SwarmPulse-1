@@ -104,13 +104,33 @@ public class PulseWebSocketServer extends WebSocketServer {
 				String request = message.substring(message.indexOf("=") + 1);
 				// System.out.println("Request -- "+request);
 				if (request.length() > 1) {
-					PulseTimeMachineRequest pulseTimeMachineRequest = new PulseTimeMachineRequest(request, conn);
+					PulseTimeMachineRequest pulseTimeMachineRequest = new PulseTimeMachineRequest(request, conn, 0);
 					prhServer.addToRequestList(pulseTimeMachineRequest);
 					prhServer.hTimeMachineConnectionList.put(conn, pulseTimeMachineRequest);
 					Thread reqServerThread = new Thread(prhServer);
 					reqServerThread.start();
 
 				} else if (request.length() == 1) {
+					prhServer.hTimeMachineConnectionList.put(conn, new PulseTimeMachineRequest(true));
+
+				}
+
+				break;
+			case 2:
+				// System.out.println("Switched conn to Time Machine.");
+				// System.out.println("hTimeMachineConnectionList size =
+				// "+prhServer.hTimeMachineConnectionList.size());
+
+				String requestValue = message.substring(message.indexOf("=") + 1);
+				// System.out.println("Request -- "+request);
+				if (requestValue.length() > 1) {
+					PulseTimeMachineRequest pulseTimeMachineRequest = new PulseTimeMachineRequest(requestValue, conn, 1);
+					prhServer.addToRequestList(pulseTimeMachineRequest);
+					prhServer.hTimeMachineConnectionList.put(conn, pulseTimeMachineRequest);
+					Thread reqServerThread = new Thread(prhServer);
+					reqServerThread.start();
+
+				} else if (requestValue.length() == 1) {
 					prhServer.hTimeMachineConnectionList.put(conn, new PulseTimeMachineRequest(true));
 
 				}
@@ -192,7 +212,6 @@ public class PulseWebSocketServer extends WebSocketServer {
 
 		if (prhServer.hTimeMachineConnectionList.size() == 0)
 			PulseTimeMachineRequest.ID_COUNTER = 0;
-
 	}
 
 }

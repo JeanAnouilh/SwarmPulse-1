@@ -135,10 +135,10 @@ public class WriteJSON {
 				if (reading.type == 0) {
 					// System.out.println("Reading instance of light");
 					properties.addProperty("readingType", "" + 0);
-					properties.addProperty("lightLevel", "" + ((LightReading) reading).lightVal);
+					properties.addProperty("level", "" + ((LightReading) reading).lightVal);
 				} else if (reading.type == 1) {
 					properties.addProperty("readingType", "" + 1);
-					properties.addProperty("noiseLevel", "" + ((NoiseReading) reading).soundVal);
+					properties.addProperty("level", "" + ((NoiseReading) reading).soundVal);
 				} else if (reading.type == 2) {
 					properties.addProperty("readingType", "" + 2);
 					properties.addProperty("message", "" + ((TextVisual) reading).textMsg);
@@ -154,7 +154,7 @@ public class WriteJSON {
 					properties.addProperty("z", "" + ((GyroReading) reading).z);
 				} else if (reading.type == 5) {
 					properties.addProperty("readingType", "" + 5);
-					properties.addProperty("temperatureLevel", "" + ((TemperatureReading) reading).temperatureVal);
+					properties.addProperty("level", "" + ((TemperatureReading) reading).temperatureVal);
 				} else {
 					// System.out.println("Reading instance not known");
 				}

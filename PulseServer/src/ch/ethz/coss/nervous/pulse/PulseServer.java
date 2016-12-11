@@ -40,7 +40,7 @@ import ch.ethz.coss.nervous.pulse.utils.Log;
 public class PulseServer {
 
 	public static void main(String[] args) throws InterruptedException, IOException {
-		WebSocketImpl.DEBUG = false;
+		WebSocketImpl.DEBUG = true;
 
 		// Load configuration from custom path or current directory
 		if (args.length > 0) {

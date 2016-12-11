@@ -149,10 +149,10 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 					if (reading.type == 0) {
 						// System.out.println("Reading instance of light");
 						properties.addProperty("readingType", "" + 0);
-						properties.addProperty("Lightlevel", "" + ((LightReading) reading).lightVal);
+						properties.addProperty("level", "" + ((LightReading) reading).lightVal);
 					} else if (reading.type == 1) {
 						properties.addProperty("readingType", "" + 1);
-						properties.addProperty("Noiselevel", "" + ((NoiseReading) reading).soundVal);
+						properties.addProperty("level", "" + ((NoiseReading) reading).soundVal);
 					} else if (reading.type == 2) {
 						properties.addProperty("readingType", "" + 2);
 						properties.addProperty("message", "" + ((TextVisual) reading).textMsg);
@@ -168,7 +168,7 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 						properties.addProperty("z", "" + ((GyroReading) reading).z);
 					} else if (reading.type == 5) {
 						properties.addProperty("readingType", "" + 5);
-						properties.addProperty("Temperaturelevel", "" + ((TemperatureReading) reading).temperatureVal);
+						properties.addProperty("level", "" + ((TemperatureReading) reading).temperatureVal);
 					} else {
 						// System.out.println("Reading instance not known");
 					}
@@ -223,7 +223,13 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 								datastmt.setDouble(6, ((GyroReading) reading).z);
 								datastmt.setDouble(7, reading.location.latnLong[0]);
 								datastmt.setDouble(8, reading.location.latnLong[1]);
-							}
+							} else if (reading.type == 5) {
+								datastmt.setLong(2, reading.timestamp);
+								datastmt.setLong(3, reading.volatility);
+								datastmt.setDouble(4, ((TemperatureReading) reading).temperatureVal);
+								datastmt.setDouble(5, reading.location.latnLong[0]);
+								datastmt.setDouble(6, reading.location.latnLong[1]);
+							} 
 							// System.out.println("datastmt after populating - "
 							// + datastmt.toString());
 

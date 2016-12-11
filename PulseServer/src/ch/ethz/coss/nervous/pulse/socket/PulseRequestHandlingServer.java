@@ -99,7 +99,6 @@ public class PulseRequestHandlingServer implements Runnable {
 						break;
 					}
 				}
-
 				timeMachineRequestArrayList.clear();
 			}
 			try {
@@ -108,7 +107,6 @@ public class PulseRequestHandlingServer implements Runnable {
 				stopped = true;
 				e.printStackTrace();
 			}
-
 		}
 		threadPool.shutdown();
 		Log.getInstance().append(Log.FLAG_INFO, "PulseRequestHandlingServer threading pool is shut down");

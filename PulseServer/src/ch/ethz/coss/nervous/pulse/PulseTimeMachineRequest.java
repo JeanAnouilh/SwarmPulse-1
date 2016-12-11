@@ -33,6 +33,7 @@ public class PulseTimeMachineRequest {
 	public int readingType = 0;
 	public long startTime = 0;
 	public long endTime = 0;
+	public int requestType = 0; //0 - timeMachine, 1 - ValueRequest
 	public WebSocket webSocket = null;
 	public boolean isNull;
 
@@ -48,7 +49,7 @@ public class PulseTimeMachineRequest {
 		this.webSocket = webSocket;
 	}
 
-	public PulseTimeMachineRequest(String request, WebSocket webSocket) {
+	public PulseTimeMachineRequest(String request, WebSocket webSocket, int requestType) {
 		requestID++;
 		// System.out.println("String request = "+request);
 		String[] tokens = request.split(",");
@@ -57,6 +58,7 @@ public class PulseTimeMachineRequest {
 		this.startTime = Long.parseLong(tokens[2]);
 		this.endTime = Long.parseLong(tokens[3]);
 		this.webSocket = webSocket;
+		this.requestType = requestType;
 
 		print();
 	}

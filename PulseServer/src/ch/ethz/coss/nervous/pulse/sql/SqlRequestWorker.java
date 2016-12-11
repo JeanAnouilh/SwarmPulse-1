@@ -64,29 +64,33 @@ public class SqlRequestWorker extends SqlFetchWorker {
 
 				/***** SQL get ********/
 				// Fetch data
-				PreparedStatement datastmt = sqlse.getSensorValuesFetchStatement(connection, ptmRequest.readingType,
+				PreparedStatement datastmt = null;
+				if(ptmRequest.requestType == 0) {
+					datastmt = sqlse.getSensorValuesFetchStatement(connection, ptmRequest.readingType,
 						ptmRequest.startTime, ptmRequest.endTime);
+				} else if(ptmRequest.requestType == 1) {
+					datastmt = sqlse.getSensorValuesFetchStatement2(connection, ptmRequest.readingType,
+							ptmRequest.startTime, ptmRequest.endTime);
+				}
 				ResultSet rs = datastmt.executeQuery();
 				featureCollection = new JsonObject();
 				features = new JsonArray();
-				// System.out.println("SQL query result size =
-				// "+rs.getFetchSize());
+				//System.out.println("SQL query result size = " + rs.getFetchSize());
 				long currentTimeMillis = System.currentTimeMillis();
+				
 				while (rs.next()) {
 					long volatility = rs.getLong("Volatility");
 					long recordTime = rs.getLong("RecordTime");
 
-//					System.out.println("Volatility = " + volatility);
-//					System.out.println("currentTimeMillis = " + currentTimeMillis);
-//					System.out.println("left time = " + (currentTimeMillis - (recordTime + (volatility * 1000))));
+					//System.out.println("Volatility = " + volatility);
+					//System.out.println("currentTimeMillis = " + currentTimeMillis);
+					//System.out.println("left time = " + (currentTimeMillis - (recordTime + (volatility * 1000))));
 					if(volatility != -1)
 					if (volatility == 0 || currentTimeMillis > (recordTime + (volatility * 1000) )) {
-//						System.out.println("Continue");
+						//System.out.println("Continue");
 						continue;
 					}
 					
-					
-
 					String lat = rs.getString("lat");
 					String lon = rs.getString("lon");
 

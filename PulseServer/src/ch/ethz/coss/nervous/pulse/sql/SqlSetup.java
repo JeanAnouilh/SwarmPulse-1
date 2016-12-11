@@ -105,9 +105,24 @@ public class SqlSetup {
 		sb.append("SELECT * FROM `ELEMENT_" + PulseConstants.getLabel(readingType) + "` WHERE RecordTime BETWEEN "
 				+ startTime + " AND " + endTime + ";");
 
-		// System.out.println(" ---- ---- "+sb.toString());
 		return con.prepareStatement(sb.toString());
+	}
+	
+	/**
+	 * 
+	 * SELECT * FROM `Element_` WHERE Value BETWEEN x and y
+	 */
 
+	public PreparedStatement getSensorValuesFetchStatement2(Connection con, int readingType, long startValue,
+			long endValue) throws SQLException {
+		StringBuilder sb = new StringBuilder();
+		String valueName = PulseConstants.getLabel(readingType);
+		if(PulseConstants.getLabel(readingType).equals("Noise")) valueName = "Decibel";
+		sb.append("SELECT * FROM `ELEMENT_" + PulseConstants.getLabel(readingType) + "` WHERE " + valueName + " BETWEEN "
+				+ startValue + " AND " + endValue + ";");
+		System.out.println(sb.toString());
+
+		return con.prepareStatement(sb.toString());
 	}
 
 	private void setupPulseTables() {

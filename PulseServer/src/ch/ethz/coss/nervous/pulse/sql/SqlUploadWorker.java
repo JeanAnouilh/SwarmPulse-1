@@ -158,14 +158,30 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 						properties.addProperty("message", "" + ((TextVisual) reading).textMsg);
 					} else if (reading.type == 3) {
 						properties.addProperty("readingType", "" + 3);
-						properties.addProperty("x", "" + ((AccReading) reading).x);
-						properties.addProperty("y", "" + ((AccReading) reading).y);
-						properties.addProperty("z", "" + ((AccReading) reading).z);
+						double x = ((AccReading) reading).x;
+						double y = ((AccReading) reading).y;
+						double z = ((AccReading) reading).z;
+						double magnitude = Math.sqrt(x*x + y*y + z*z);
+						x /= magnitude;
+						y /= magnitude;
+						z /= magnitude;
+						properties.addProperty("magnitude", "" + magnitude);
+						properties.addProperty("x", "" + x);
+						properties.addProperty("y", "" + y);
+						properties.addProperty("z", "" + z);
 					} else if (reading.type == 4) {
 						properties.addProperty("readingType", "" + 4);
-						properties.addProperty("x", "" + ((GyroReading) reading).x);
-						properties.addProperty("y", "" + ((GyroReading) reading).y);
-						properties.addProperty("z", "" + ((GyroReading) reading).z);
+						double x = ((GyroReading) reading).x;
+						double y = ((GyroReading) reading).y;
+						double z = ((GyroReading) reading).z;
+						double magnitude = Math.sqrt(x*x + y*y + z*z);
+						x /= magnitude;
+						y /= magnitude;
+						z /= magnitude;
+						properties.addProperty("magnitude", "" + magnitude);
+						properties.addProperty("x", "" + x);
+						properties.addProperty("y", "" + y);
+						properties.addProperty("z", "" + z);
 					} else if (reading.type == 5) {
 						properties.addProperty("readingType", "" + 5);
 						properties.addProperty("level", "" + ((TemperatureReading) reading).temperatureVal);
@@ -210,19 +226,35 @@ public class SqlUploadWorker extends ConcurrentSocketWorker {
 							} else if (reading.type == 3) {
 								datastmt.setLong(2, reading.timestamp);
 								datastmt.setLong(3, reading.volatility);
-								datastmt.setDouble(4, ((AccReading) reading).x);
-								datastmt.setDouble(5, ((AccReading) reading).y);
-								datastmt.setDouble(6, ((AccReading) reading).z);
-								datastmt.setDouble(7, reading.location.latnLong[0]);
-								datastmt.setDouble(8, reading.location.latnLong[1]);
+								double x = ((AccReading) reading).x;
+								double y = ((AccReading) reading).y;
+								double z = ((AccReading) reading).z;
+								double magnitude = Math.sqrt(x*x + y*y + z*z);
+								x /= magnitude;
+								y /= magnitude;
+								z /= magnitude;
+								datastmt.setDouble(4, magnitude);
+								datastmt.setDouble(5, x);
+								datastmt.setDouble(6, y);
+								datastmt.setDouble(7, z);
+								datastmt.setDouble(8, reading.location.latnLong[0]);
+								datastmt.setDouble(9, reading.location.latnLong[1]);
 							} else if (reading.type == 4) {
 								datastmt.setLong(2, reading.timestamp);
 								datastmt.setLong(3, reading.volatility);
-								datastmt.setDouble(4, ((GyroReading) reading).x);
-								datastmt.setDouble(5, ((GyroReading) reading).y);
-								datastmt.setDouble(6, ((GyroReading) reading).z);
-								datastmt.setDouble(7, reading.location.latnLong[0]);
-								datastmt.setDouble(8, reading.location.latnLong[1]);
+								double x = ((GyroReading) reading).x;
+								double y = ((GyroReading) reading).y;
+								double z = ((GyroReading) reading).z;
+								double magnitude = Math.sqrt(x*x + y*y + z*z);
+								x /= magnitude;
+								y /= magnitude;
+								z /= magnitude;
+								datastmt.setDouble(4, magnitude);
+								datastmt.setDouble(5, x);
+								datastmt.setDouble(6, y);
+								datastmt.setDouble(7, z);
+								datastmt.setDouble(8, reading.location.latnLong[0]);
+								datastmt.setDouble(9, reading.location.latnLong[1]);
 							} else if (reading.type == 5) {
 								datastmt.setLong(2, reading.timestamp);
 								datastmt.setLong(3, reading.volatility);

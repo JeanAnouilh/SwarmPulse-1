@@ -131,18 +131,22 @@ public class SqlRequestWorker extends SqlFetchWorker {
 						String x = rs.getString("x");
 						String y = rs.getString("y");
 						String z = rs.getString("z");
+						String magnitude = rs.getString("magnitude");
 						properties.addProperty("readingType", "" + 3);
 						properties.addProperty("x", x);
 						properties.addProperty("y", y);
 						properties.addProperty("z", z);
+						properties.addProperty("magnitude", magnitude);
 					} else if (ptmRequest.readingType == 4) {
 						String x = rs.getString("x");
 						String y = rs.getString("y");
 						String z = rs.getString("z");
+						String magnitude = rs.getString("magnitude");
 						properties.addProperty("readingType", "" + 4);
 						properties.addProperty("x", x);
 						properties.addProperty("y", y);
 						properties.addProperty("z", z);
+						properties.addProperty("magnitude", magnitude);
 					} else if (ptmRequest.readingType == 5) {
 						String temperatureVal = rs.getString("Temperature");
 						properties.addProperty("readingType", "" + 5);

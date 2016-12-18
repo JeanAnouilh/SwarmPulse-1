@@ -224,7 +224,7 @@ public class Configuration {
 		this.sqlPort = 3306;
 		this.sqlDatabase = "";
 		// Networking
-		this.serverPortApps = 8445;
+		this.serverPortApps = 25600;
 		this.serverPortClient = 8446;
 		this.serverThreads = 5;
 		// Sensors

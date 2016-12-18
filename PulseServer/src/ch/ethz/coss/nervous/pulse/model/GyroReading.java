@@ -29,15 +29,16 @@ import java.io.Serializable;
 
 public class GyroReading extends Visual implements Serializable {
 
-	public double x, y, z;
+	public double x, y, z, magnitude;
 	
 	public GyroReading() {
 		
 	}
 
-	public GyroReading(String uuid, double x, double y, double z, long timestamp, long volatility, VisualLocation location) {
+	public GyroReading(String uuid, double magnitude, double x, double y, double z, long timestamp, long volatility, VisualLocation location) {
 		type = 4;
 		this.uuid = uuid;
+		this.magnitude = magnitude;
 		this.x = x;
 		this.y = y;
 		this.z = z;

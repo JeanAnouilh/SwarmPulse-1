@@ -77,7 +77,7 @@ public class PulseServer {
 		pWebSocketServer.start();
 
 		// Start server
-		PulseConcurrentServer server = new PulseConcurrentServer(8445, pWebSocketServer, 5, factory);
+		PulseConcurrentServer server = new PulseConcurrentServer(25600, pWebSocketServer, 5, factory);
 		Thread serverThread = new Thread(server);
 		serverThread.start();
 		log.append(Log.FLAG_INFO, "PulseConcurrentServer Started");
@@ -103,6 +103,6 @@ public class PulseServer {
 
 	}
 
-	public static int smartphonesPort = 8445;
+	public static int smartphonesPort = 25600;
 	public static Configuration config;
 }

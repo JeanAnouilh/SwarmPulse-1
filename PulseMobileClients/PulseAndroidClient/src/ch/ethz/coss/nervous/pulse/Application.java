@@ -85,8 +85,8 @@ public class Application extends android.app.Application {
 	public static void initSensorService(Context context) {
 		sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
 		try {
-			synchWriter = new SynchWriter("129.132.255.27", 8445, 1000);
-			// synchWriter = new SynchWriter("10.3.24.208", 8445, 1000);
+			synchWriter = new SynchWriter("129.132.255.27", 25600, 1000);
+			// synchWriter = new SynchWriter("10.3.24.208", 25600, 1000);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

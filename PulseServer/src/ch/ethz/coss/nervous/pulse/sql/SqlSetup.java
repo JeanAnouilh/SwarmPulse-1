@@ -118,6 +118,8 @@ public class SqlSetup {
 		StringBuilder sb = new StringBuilder();
 		String valueName = PulseConstants.getLabel(readingType);
 		if(PulseConstants.getLabel(readingType).equals("Noise")) valueName = "Decibel";
+		else if(PulseConstants.getLabel(readingType).equals("Acc")) valueName = "Magnitude";
+		else if(PulseConstants.getLabel(readingType).equals("Gyro")) valueName = "Magnitude";
 		sb.append("SELECT * FROM `ELEMENT_" + PulseConstants.getLabel(readingType) + "` WHERE " + valueName + " BETWEEN "
 				+ startValue + " AND " + endValue + ";");
 		System.out.println(sb.toString());

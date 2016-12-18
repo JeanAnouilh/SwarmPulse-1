@@ -128,8 +128,8 @@ $(document)
 							"Light" : lightMarkers,
 							"Sound" : noiseMarkers,
 							"Temperature" : temperatureMarkers,
-							//"Acceleration" : accelerometerMarkers, TODO
-							//"Gyroscope" : gyroMarkers
+							"Acceleration" : accelerometerMarkers,
+							"Gyroscope" : gyroMarkers
 
 						}
 					};
@@ -364,7 +364,7 @@ $(document)
 															.log("******LOG*******Inside onClick realTime Button");
 												}
 												control.state("timeMachine");
-												//$('valueSelectionButton').state("allValues");
+												valueSelectionButton.state('allValues');
 												changeSocketToTimeMachine();
 
 												resetBeforeSendingTimeMachineRequest();
@@ -401,7 +401,7 @@ $(document)
 
 													resetToTemperatureReadings();
 													last_layer = 3;
-												} /*else if (current_layer == 4) { TODO
+												} else if (current_layer == 4) {
 
 													resetToAccelerometerReadings();
 													last_layer = 4;
@@ -409,7 +409,7 @@ $(document)
 
 													resetToGyroReadings();
 													last_layer = 5;
-												}*/
+												}
 												changeSocketToRealTime();
 
 												$('#datePicker').hide(0);
@@ -439,7 +439,7 @@ $(document)
 													console
 															.log("******LOG*******Inside onClick allValues Button");
 												}
-												//$('realTimeButton').state("realTime");
+												realTimeButton.state('realTime');
 												control.state("valueSelection");
 												changeSocketToValuePicker();
 
@@ -477,7 +477,7 @@ $(document)
 
 													resetToTemperatureReadings();
 													last_layer = 3;
-												} /*else if (current_layer == 4) { TODO
+												} else if (current_layer == 4) {
 
 													resetToAccelerometerReadings();
 													last_layer = 4;
@@ -485,7 +485,7 @@ $(document)
 
 													resetToGyroReadings();
 													last_layer = 5;
-												}*/
+												}
 												changeSocketToRealTime();
 
 												$('#valuePicker').hide(0);
@@ -496,7 +496,7 @@ $(document)
 							});
 
 					valueSelectionButton.addTo(map);
-					valueSelectionButton.state('valueSelection');
+					valueSelectionButton.state('allValues');
 
 					/** *************************** */
 					
@@ -611,7 +611,7 @@ $(document)
 										makeInitialRequest();
 									}
 
-								} /*else if (a.name == "Acceleration" TODO
+								} else if (a.name == "Acceleration"
 										&& current_layer != 4) {
 
 									resetToAccelerometerReadings();
@@ -641,7 +641,7 @@ $(document)
 										makeInitialRequest();
 									}
 
-								} */else if (a.name == "Temperature"
+								} else if (a.name == "Temperature"
 										&& current_layer != 3) {
 
 									resetToTemperatureReadings();
@@ -668,11 +668,10 @@ $(document)
 							legendSound.removeFrom(map);
 						else if (last_layer == 3)
 							legendTemperature.removeFrom(map);
-						/*else if (last_layer == 4)
+						else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);TODO
-						*/
+							legendGyro.removeFrom(map);
 						current_layer = 1;
 						lightMarkers.addLayer(pruneCluster);
 						map.addLayer(lightMarkers);
@@ -687,11 +686,10 @@ $(document)
 							legendLight.removeFrom(map);
 						else if (last_layer == 3)
 							legendTemperature.removeFrom(map);
-						/*else if (last_layer == 4)
+						else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);TODO
-						*/
+							legendGyro.removeFrom(map);
 						current_layer = 2;
 						noiseMarkers.addLayer(pruneCluster);
 						map.addLayer(noiseMarkers);
@@ -706,11 +704,10 @@ $(document)
 							legendLight.removeFrom(map);
 						else if (last_layer == 3)
 							legendTemperature.removeFrom(map);
-						/*else if (last_layer == 4)
+						else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);TODO
-						*/
+							legendGyro.removeFrom(map);
 						current_layer = 0;
 						msgMarkers.addLayer(pruneCluster);
 						map.addLayer(msgMarkers);
@@ -725,20 +722,19 @@ $(document)
 							legendLight.removeFrom(map);
 						else if (last_layer == 2)
 							legendSound.removeFrom(map);
-						/*else if (last_layer == 4)
+						else if (last_layer == 4)
 							legendAccelerometer.removeFrom(map);
 						else if (last_layer == 5)
-							legendGyro.removeFrom(map);TODO
-						*/
+							legendGyro.removeFrom(map);
 						current_layer = 3;
 
 						temperatureMarkers.addLayer(pruneCluster);
 						map.addLayer(temperatureMarkers);
 					}
 					
-					/*function resetToAccelerometerReadings() { TODO
+					function resetToAccelerometerReadings() {
 						removeAllMarkers();
-						if (current_layer != 2)
+						if (current_layer != 4)
 							legendAccelerometer.addTo(map);
 
 						if (last_layer == 1)
@@ -758,7 +754,7 @@ $(document)
 					
 					function resetToGyroReadings() {
 						removeAllMarkers();
-						if (current_layer != 2)
+						if (current_layer != 5)
 							legendGyro.addTo(map);
 
 						if (last_layer == 1)
@@ -774,7 +770,7 @@ $(document)
 
 						gyroMarkers.addLayer(pruneCluster);
 						map.addLayer(gyroMarkers);
-					}*/
+					}
 
 					function removeAllMarkers() {
 						if (DEBUG) {
@@ -786,16 +782,16 @@ $(document)
 						pruneCluster.RemoveMarkers();
 						lightMarkers.clearLayers();
 						noiseMarkers.clearLayers();
-						//accelerometerMarkers.clearLayers();TODO
+						accelerometerMarkers.clearLayers();
 						temperatureMarkers.clearLayers();
-						//gyroMarkers.clearLayers();TODO
+						gyroMarkers.clearLayers();
 						msgMarkers.clearLayers();
 						map.removeLayer(lightMarkers);
 						map.removeLayer(noiseMarkers);
-						//map.removeLayer(accelerometerMarkers);TODO
+						map.removeLayer(accelerometerMarkers);
 						map.removeLayer(msgMarkers);
 						map.removeLayer(temperatureMarkers);
-						//map.removeLayer(gyroMarkers);TODO
+						map.removeLayer(gyroMarkers);
 						counter = 0;
 						if (DEBUG) {
 							console
@@ -844,17 +840,17 @@ $(document)
 										: d > -20 ? 1 : 0;
 					}
 
-					/*function getAccelerometerId(d) {
+					function getAccelerometerId(d) {
 						return d > 140 ? 7 : d > 120 ? 6 : d > 100 ? 5
-								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2 TODO
+								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2
 										: d > 10 ? 1 : 0;
-					}*/
+					}
 
-					/*function getGyroId(d) {
+					function getGyroId(d) {
 						return d > 140 ? 7 : d > 120 ? 6 : d > 100 ? 5
-								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2 TODO
+								: d > 70 ? 4 : d > 50 ? 3 : d > 30 ? 2
 										: d > 10 ? 1 : 0;
-					}*/
+					}
 
 					function getNoiseColor(d) {
 						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
@@ -874,24 +870,24 @@ $(document)
 																: '#FFEDA0';
 					}
 
-					/*function getAccelerometerColor(d) {
+					function getAccelerometerColor(d) {
 						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
 								: d > 100 ? '#E31A1C' : d > 70 ? '#FC4E2A'
 										: d > 50 ? '#FD8D3C'
 												: d > 30 ? '#FEB24C'
 														: d > 10 ? '#FED976'
 																: '#FFEDA0'; TODO
-					}*/
+					}
 
-					/*function getGyroColor(d) {
+					function getGyroColor(d) {
 						return d > 140 ? '#800026' : d > 120 ? '#BD0026'
 								: d > 100 ? '#E31A1C' : d > 70 ? '#FC4E2A'
 										: d > 50 ? '#FD8D3C'
 												: d > 30 ? '#FEB24C'
 														: d > 10 ? '#FED976'
 																: '#FFEDA0'; TODO
-					}*/
-
+					}
+					
 					function getLightColor(d) {
 						return d > 100000 ? '#800026' : d > 10000 ? '#BD0026'
 								: d > 1000 ? '#E31A1C' : d > 100 ? '#FC4E2A'
@@ -900,15 +896,6 @@ $(document)
 														: d > 0 ? '#FED976'
 																: '#FFEDA0';
 					}
-
-					// function getLightColor(d) {
-					// return d > 100000 ? '#FFFFFF' : d > 10000 ? '#DADFA2'
-					// : d > 1000 ? '#BBBF8C' : d > 100 ? '#9C9F77'
-					// : d > 10 ? '#7D8061'
-					// : d > 5 ? '#5E604C'
-					// : d > 0 ? '#3F4036'
-					// : '#212121';
-					// }
 
 					function getInnerColor(type) {
 
@@ -1195,9 +1182,12 @@ $(document)
 								var accelerometerMarker = new PruneCluster.Marker(
 										msg.geometry.coordinates[0],
 										msg.geometry.coordinates[1]);
-								accelerometerMarker.data.popup = '<p style="color:black"  ><strong>'
-										+ msg.properties.level
-										+ '</strong> db<br>';
+								accelerometerMarker.data.popup = '<table id="marker"><tr><td>Magnitude</td><td><strong>'
+										+ msg.properties.magnitude
+										+ '</strong> m<sup>2</sup>/s</td></tr><tr><td>x-axis</td><td><strong>' 
+										+ msg.properties.x + '</strong></td></tr><tr><td>y-axis</td><td><strong>' 
+										+ msg.properties.y + '</strong></td></tr><tr><td>z-axis</td><td><strong>' 
+										+ msg.properties.z + '</strong></td></tr></table>';
 								// +msg.geometry.coordinates[0]+',
 								// '+msg.geometry.coordinates[1];
 
@@ -1212,7 +1202,7 @@ $(document)
 								} else
 									accelerometerMarker.data.name = msg.properties.recordTime;
 
-								accelerometerMarker.data.weight = getAccelerometerId(msg.properties.level); // Weight
+								accelerometerMarker.data.weight = getAccelerometerId(msg.properties.magnitude); // Weight
 								// is
 								// the
 								// level
@@ -1233,9 +1223,12 @@ $(document)
 								var gyroMarker = new PruneCluster.Marker(
 										msg.geometry.coordinates[0],
 										msg.geometry.coordinates[1]);
-								gyroMarker.data.popup = '<p style="color:black"  ><strong>'
-										+ msg.properties.level
-										+ '</strong> db<br>';
+								gyroMarker.data.popup = '<table id="marker"><tr><td>Magnitude</td><td><strong>'
+									+ msg.properties.magnitude
+									+ '</strong> Nm</td></tr><tr><td>x-axis</td><td><strong>' 
+									+ msg.properties.x + '</strong></td></tr><tr><td>y-axis</td><td><strong>' 
+									+ msg.properties.y + '</strong></td></tr><tr><td>z-axis</td><td><strong>' 
+									+ msg.properties.z + '</strong></td></tr></table>';
 								// +msg.geometry.coordinates[0]+',
 								// '+msg.geometry.coordinates[1];
 
@@ -1250,7 +1243,7 @@ $(document)
 								} else
 									gyroMarker.data.name = msg.properties.recordTime;
 
-								gyroMarker.data.weight = getGyroId(msg.properties.level); // Weight
+								gyroMarker.data.weight = getGyroId(msg.properties.magnitude); // Weight
 								// is
 								// the
 								// level
@@ -1544,13 +1537,13 @@ $(document)
 						} else if (current_layer == 3) {
 							temperatureMarkers.addLayer(pruneCluster);
 							map.addLayer(temperatureMarkers)
-						} /*else if (current_layer == 4) { TODO
+						} else if (current_layer == 4) {
 							accelerometerMarkers.addLayer(pruneCluster);
 							map.addLayer(accelerometerMarkers)
 						} else if (current_layer == 5) {
 							gyroMarkers.addLayer(pruneCluster);
 							map.addLayer(gyroMarkers)
-						} */
+						}
 					}
 					
 					function resetBeforeSendingValueRequest() {
@@ -1568,13 +1561,13 @@ $(document)
 						} else if (current_layer == 3) {
 							temperatureMarkers.addLayer(pruneCluster);
 							map.addLayer(temperatureMarkers)
-						} /*else if (current_layer == 4) { TODO
+						} else if (current_layer == 4) {
 							accelerometerMarkers.addLayer(pruneCluster);
 							map.addLayer(accelerometerMarkers)
 						} else if (current_layer == 5) {
 							gyroMarkers.addLayer(pruneCluster);
 							map.addLayer(gyroMarkers)
-						} */
+						}
 					}
 
 					window.prepareTimeMachineReq = function() {

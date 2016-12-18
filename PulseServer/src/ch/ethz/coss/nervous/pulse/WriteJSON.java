@@ -144,11 +144,13 @@ public class WriteJSON {
 					properties.addProperty("message", "" + ((TextVisual) reading).textMsg);
 				} else if (reading.type == 3) {
 					properties.addProperty("readingType", "" + 3);
+					properties.addProperty("magnitude", "" + ((AccReading) reading).magnitude);
 					properties.addProperty("x", "" + ((AccReading) reading).x);
 					properties.addProperty("y", "" + ((AccReading) reading).y);
 					properties.addProperty("z", "" + ((AccReading) reading).z);
 				} else if (reading.type == 4) {
 					properties.addProperty("readingType", "" + 4);
+					properties.addProperty("magnitude", "" + ((GyroReading) reading).magnitude);
 					properties.addProperty("x", "" + ((GyroReading) reading).x);
 					properties.addProperty("y", "" + ((GyroReading) reading).y);
 					properties.addProperty("z", "" + ((GyroReading) reading).z);

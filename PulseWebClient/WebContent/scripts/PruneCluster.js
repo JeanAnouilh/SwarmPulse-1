@@ -806,6 +806,7 @@ var PruneClusterLeafletSpiderfier = (L.Layer ? L.Layer : L.Class).extend({
             L.polyline([], { weight: 1.5, color: '#222' });
     },
     onAdd: function (map) {
+    	alert("test");
         this._map = map;
         this._map.on('overlappingmarkers', this.Spiderfy, this);
         this._map.on('click', this.Unspiderfy, this);

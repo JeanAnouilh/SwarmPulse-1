@@ -71,6 +71,10 @@
                     <sensorName>Accelerometer</sensorName>
                     <sensorID>0000000000000003</sensorID>
                     <attributes>
+                    	<attribute>
+                            <name>magnitude</name>
+                            <type>FLOAT</type>
+                        </attribute>
                         <attribute>
                             <name>x</name>
                             <type>FLOAT</type>
@@ -97,6 +101,10 @@
                     <sensorName>Gyroscope</sensorName>
                     <sensorID>0000000000000004</sensorID>
                     <attributes>
+                    	<attribute>
+                            <name>magnitude</name>
+                            <type>FLOAT</type>
+                        </attribute>
                         <attribute>
                             <name>x</name>
                             <type>FLOAT</type>
